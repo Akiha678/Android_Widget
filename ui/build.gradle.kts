@@ -34,6 +34,26 @@ android {
 }
 
 publishing {
+    repositories {
+        maven {
+            name = "GitHubPackages"
+
+            url = uri(
+                "https://maven.pkg.github.com/Akiha678/Android_Widget"
+            )
+
+            credentials {
+                /**
+                 * 这里进行了`export GITHUB_USERNAME`，请检查本机
+                 */
+                username = System.getenv("GITHUB_USERNAME")
+
+                password = System.getenv("GITHUB_TOKEN")
+            }
+        }
+    }
+
+
     publications {
         register<MavenPublication>("release") {
             groupId = "com.seanchen.widget"
