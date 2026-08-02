@@ -18,7 +18,7 @@ import androidx.compose.ui.graphics.lerp
  * 适用场景：主要按钮、主题色、重要操作元素等
  * 在浅色和深色模式下保持一致
  */
-val PrimaryDefault = Color(0xFF465CFF) // 默认主色
+val PrimaryDefault = Color(0xFF249DE3) // 默认主色
 
 /**
  * 当前主题主色（受主题切换影响）
