@@ -1,14 +1,19 @@
-# CommonWidget
+<div align="center">
+<img src="docs/images/xincomponent_logo.png" width="120" alt="Logo"/>
 
-基于 Jetpack Compose 的企业级 Android 组件库，提供 Theme、Button、Dialog 等生产就绪的 UI 组件，以及网络与工具类模块。
+基于 Jetpack Compose 的企业级 Android 组件库
 
-## 模块
+<div align="center">
+    <a href="README_EN.md">🌍 English</a>
+</div>
 
-| 模块 | 说明 |
-|------|------|
-| `ui` | Compose UI 组件（Theme、Button、Dialog、Color、Shape） |
-| `network` | 网络请求封装（规划中） |
-| `utils` | 通用工具类（规划中） |
+[![Kotlin](https://img.shields.io/badge/Kotlin-2.2.10-7F52FF?logo=kotlin&logoColor=white)](https://kotlinlang.org/)
+[![Jetpack Compose](https://img.shields.io/badge/Jetpack%20Compose-BOM%202026.02.01-4285F4?logo=jetpackcompose&logoColor=white)](https://developer.android.com/compose)
+
+</div>
+
+XinComponent是基于Jetpack Compose的多功能组件库，包含UI类、工具类、网络类，可快速构建美观、主题一致的Android应用，提供丰富的主题定制组件能力。
+
 
 
 ## 组件
@@ -106,28 +111,4 @@ AppDialog(
 ./gradlew test
 ```
 
-## 许可证
 
-```
-MIT License
-
-Copyright (c) 2026 SeanChen
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-```
