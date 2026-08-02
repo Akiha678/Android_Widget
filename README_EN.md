@@ -14,23 +14,12 @@
 
 XinComponent provides Compose applications with consistent design tokens, theming, and foundational interactive components. The current release prioritizes clear APIs, complete states, extensibility, and reliable publication. Reserved modules are explicitly identified instead of being advertised as finished features.
 
-## Project status
-
-The project is evolving rapidly in the `0.x` phase. It is suitable for pilot adoption and collaborative development, but public APIs may still change before `1.0.0`.
-
-| Module | Status | Contents |
-| --- | --- | --- |
-| `ui` | Available | Material 3 theme, semantic colors, text colors, spacing tokens, buttons, and dialogs |
-| `network` | Reserved | No public networking API yet; do not use it in production |
-| `utils` | Reserved | No public utility API yet; do not use it in production |
-
 ## Highlights
 
 - Material 3 foundation with light/dark themes, Android 12+ dynamic color, and a custom brand color.
 - Semantic color, text color, and shared 4dp spacing tokens exposed through `XinTheme`.
 - Filled, outlined, and gradient buttons with semantic types, sizes, disabled, and loading states.
 - Dialogs with confirm/cancel actions, asynchronous confirmation, dismissal policies, a maximum width, and slot-based customization.
-- Source JARs and Maven POM metadata, with public Compose dependencies correctly exposed through `api`.
 - Android 7.0 (API 24) minimum; Kotlin 2.3.20, Compose 1.11.4, and Material 3 1.4.0.
 
 ## Installation
@@ -83,28 +72,6 @@ AppTheme(
     AppContent()
 }
 ```
-
-## Design tokens
-
-Components and product screens should use shared tokens instead of one-off colors and dimensions:
-
-```kotlin
-@Composable
-fun StatusMessage() {
-    Text(
-        text = "Saved",
-        color = XinTheme.colors.success,
-        modifier = Modifier.padding(XinTheme.spacing.large),
-    )
-}
-```
-
-Available entry points:
-
-- `MaterialTheme.colorScheme` for Material 3 foundation colors.
-- `XinTheme.colors` for `success`, `warning`, `danger`, `info`, and `onStatus`.
-- `XinTheme.textColors` for `primary`, `secondary`, `tertiary`, `quaternary`, `white`, and `link`.
-- `XinTheme.spacing` for the shared spacing scale from `none` to `huge`.
 
 ## Components
 
@@ -163,29 +130,6 @@ XinComponent/
 └── gradle/   # Version catalog and Wrapper configuration
 ```
 
-## Build and quality checks
-
-JDK 21 and Android SDK with compile SDK 37 are required. Use the checked-in Gradle Wrapper rather than a system Gradle installation.
-
-```bash
-# Unit tests
-./gradlew test
-
-# Android Lint
-./gradlew lint
-
-# Build all release AARs
-./gradlew assembleRelease
-
-# Publish to Maven Local
-./gradlew publishToMavenLocal
-
-# Publish to GitHub Packages
-GITHUB_USERNAME=your-name GITHUB_TOKEN=your-token ./gradlew publish
-```
-
-Run at least `./gradlew test lint assembleRelease` before submitting changes.
-
 ## Versioning and compatibility
 
 The project follows semantic versioning:
@@ -195,14 +139,6 @@ The project follows semantic versioning:
 - Major releases contain breaking changes after stabilization.
 
 Applications should pin an explicit version and avoid dynamic versions. Read theme values through `XinTheme` and `MaterialTheme` rather than depending on implementation-level color constants.
-
-## Roadmap
-
-- Add a sample application and a complete component catalog with screenshots and interaction examples.
-- Add Compose UI, screenshot, and accessibility tests for Button, Dialog, and Theme.
-- Add high-value Input, Card, Snackbar, Empty, Loading, and List components.
-- Establish binary API validation, Dokka, Detekt/Ktlint, and a CI release pipeline.
-- Keep `network` and `utils` empty until real requirements justify their contracts and dependencies.
 
 ## Contributing
 
