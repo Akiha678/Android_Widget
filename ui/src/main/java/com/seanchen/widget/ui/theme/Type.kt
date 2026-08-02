@@ -1,9 +1,10 @@
 package com.seanchen.widget.ui.theme
 
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Stable
+import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.ReadOnlyComposable
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
@@ -29,8 +30,8 @@ import com.seanchen.widget.ui.color.*
  * @param white 白色文字，用于深色背景上的文字
  * @param link 链接颜色，用于可点击文字
  */
-@Stable
-class AppTextColors(
+@Immutable
+data class AppTextColors(
     val primary: Color,
     val secondary: Color,
     val tertiary: Color,
@@ -38,6 +39,10 @@ class AppTextColors(
     val white: Color,
     val link: Color
 )
+
+internal val LocalAppTextColors = staticCompositionLocalOf<AppTextColors> {
+    error("App text colors are unavailable. Wrap content in AppTheme.")
+}
 
 /**
  * 根据当前主题获取文字颜色集合
@@ -56,26 +61,9 @@ class AppTextColors(
  * @author Joker.X
  */
 @Composable
+@ReadOnlyComposable
 fun appTextColors(): AppTextColors {
-    return if (isSystemInDarkTheme()) {
-        AppTextColors(
-            primary = TextPrimaryDark,
-            secondary = TextSecondaryDark,
-            tertiary = TextTertiaryDark,
-            quaternary = TextQuaternaryDark,
-            white = TextWhite,
-            link = Primary // 使用主色作为链接色
-        )
-    } else {
-        AppTextColors(
-            primary = TextPrimaryLight,
-            secondary = TextSecondaryLight,
-            tertiary = TextTertiaryLight,
-            quaternary = TextQuaternaryLight,
-            white = TextWhite,
-            link = Primary // 使用主色作为链接色
-        )
-    }
+    return LocalAppTextColors.current
 }
 
 /**

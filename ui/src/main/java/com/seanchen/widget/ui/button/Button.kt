@@ -1,7 +1,7 @@
 package com.seanchen.widget.ui.button
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -20,9 +20,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.lerp
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
@@ -31,12 +34,15 @@ import com.seanchen.widget.ui.color.ColorDanger
 import com.seanchen.widget.ui.color.ColorPurple
 import com.seanchen.widget.ui.color.ColorSuccess
 import com.seanchen.widget.ui.color.ColorWarning
-import com.seanchen.widget.ui.color.GradientPrimaryEnd
-import com.seanchen.widget.ui.color.GradientPrimaryStart
 import com.seanchen.widget.ui.color.Primary
 import com.seanchen.widget.ui.color.TextWhite
 import com.seanchen.widget.ui.shape.ShapeSmall
 
+/**
+ * Primary XinComponent action button.
+ *
+ * Loading disables interaction and keeps the label in the layout, preventing a width change.
+ */
 @Composable
 fun AppButton(
     text: String,
@@ -49,146 +55,23 @@ fun AppButton(
     enabled: Boolean = true,
     loading: Boolean = false,
     fullWidth: Boolean = true,
-){
-    // 按钮颜色
-    val buttonColor = when (type) {
-        ButtonType.DEFAULT -> Primary
-        ButtonType.SUCCESS -> ColorSuccess
-        ButtonType.WARNING -> ColorWarning
-        ButtonType.DANGER -> ColorDanger
-        ButtonType.PURPLE -> ColorPurple
-        ButtonType.LINK -> Primary
-    }
-
-    // 按钮高度
-    val buttonHeight: Dp = when (size) {
-        ButtonSize.MEDIUM -> 48.dp
-        ButtonSize.SMALL -> 40.dp
-        ButtonSize.MINI -> 34.dp
-    }
-
-    // 按钮形状
-    val buttonShape = when (shape) {
-        ButtonShape.SQUARE -> ShapeSmall
-        ButtonShape.ROUND -> RoundedCornerShape(buttonHeight / 2)
-    }
-
-    val buttonModifier = if (fullWidth) {
-        modifier.fillMaxWidth().height(buttonHeight)
-    } else {
-        modifier.height(buttonHeight)
-    }
-
-    when (style) {
-        ButtonStyle.FILLED -> {
-            Button(
-                onClick = onClick,
-                enabled = enabled && !loading,
-                shape = buttonShape,
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = buttonColor,
-                    disabledContainerColor = buttonColor.copy(alpha = 0.5f)
-                ),
-                modifier = buttonModifier
-            ) {
-                if (loading) {
-                    CircularProgressIndicator(
-                        color = TextWhite,
-                        modifier = Modifier.size(20.dp),
-                        strokeWidth = 2.dp
-                    )
-                } else {
-                    Text(
-                        text = text,
-                        style = MaterialTheme.typography.titleMedium,
-                        color = TextWhite
-                    )
-                }
-            }
-        }
-        ButtonStyle.OUTLINED -> {
-            OutlinedButton(
-                onClick = onClick,
-                enabled = enabled && !loading,
-                shape = buttonShape,
-                colors = ButtonDefaults.outlinedButtonColors(
-                    containerColor = buttonColor
-                ),
-                modifier = buttonModifier
-            ) {
-                if (loading) {
-                    CircularProgressIndicator(
-                        color = buttonColor,
-                        modifier = Modifier.size(20.dp),
-                        strokeWidth = 2.dp
-                    )
-                } else {
-                    Text(
-                        text = text,
-                        style = MaterialTheme.typography.titleMedium
-                    )
-                }
-            }
-        }
-
-        ButtonStyle.GRADIENT -> {
-            val startColor = GradientPrimaryStart
-            val endColor = GradientPrimaryEnd
-
-            val gradientBrush = Brush.horizontalGradient(
-                colors = listOf(startColor, endColor)
-            )
-
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier = buttonModifier
-                    .clip(buttonShape)
-                    .background(
-                        brush = gradientBrush,
-                        alpha = if (enabled && !loading){
-                            1f
-                        } else {
-                            0.5f
-                        }
-                    )
-                    .clickable(enabled = enabled && !loading){
-                        onClick()
-                    }
-            ){
-                if (loading) {
-                     CircularProgressIndicator(
-                         color = TextWhite,
-                         modifier = Modifier.size(20.dp),
-                         strokeWidth = 2.dp
-                     )
-                } else {
-                    Text(
-                        text = text,
-                        style = MaterialTheme.typography.titleMedium,
-                        color = TextWhite
-                    )
-                }
-            }
-        }
-    }
+) {
+    AppButtonCore(
+        text = text,
+        onClick = onClick,
+        modifier = if (fullWidth) modifier.fillMaxWidth() else modifier,
+        type = type,
+        style = style,
+        height = size.height,
+        shape = shape,
+        enabled = enabled,
+        loading = loading,
+        textStyle = MaterialTheme.typography.titleMedium,
+        contentPadding = ButtonDefaults.ContentPadding,
+    )
 }
 
-
-
-/**
- * 自定义宽度的按钮组件
- *
- * @param text 按钮文本
- * @param onClick 点击回调
- * @param modifier 修饰符
- * @param type 按钮类型，默认为DEFAULT
- * @param style 按钮样式，默认为FILLED
- * @param size 按钮大小，默认为SMALL
- * @param shape 按钮形状，默认为ROUND
- * @param enabled 是否启用，默认为true
- * @param loading 是否显示加载状态，默认为false
- * @param contentPadding 内容内边距
- */
+/** Compact button whose width is determined by its content. */
 @Composable
 fun AppButtonFixed(
     text: String,
@@ -200,144 +83,24 @@ fun AppButtonFixed(
     shape: ButtonShape = ButtonShape.ROUND,
     enabled: Boolean = true,
     loading: Boolean = false,
-    contentPadding: PaddingValues = PaddingValues(horizontal = 16.dp)
+    contentPadding: PaddingValues = PaddingValues(horizontal = 16.dp),
 ) {
-    // 按钮颜色
-    val buttonColor = when (type) {
-        ButtonType.DEFAULT -> Primary
-        ButtonType.SUCCESS -> ColorSuccess
-        ButtonType.WARNING -> ColorWarning
-        ButtonType.DANGER -> ColorDanger
-        ButtonType.PURPLE -> ColorPurple
-        ButtonType.LINK -> Primary
-    }
-
-    // 按钮高度
-    val buttonHeight: Dp = when (size) {
-        ButtonSize.MEDIUM -> 48.dp
-        ButtonSize.SMALL -> 40.dp
-        ButtonSize.MINI -> 34.dp
-    }
-
-    // 按钮形状
-    val buttonShape = when (shape) {
-        ButtonShape.SQUARE -> ShapeSmall
-        ButtonShape.ROUND -> RoundedCornerShape(buttonHeight / 2)
-    }
-
-    when (style) {
-        ButtonStyle.FILLED -> {
-            Button(
-                onClick = onClick,
-                enabled = enabled && !loading,
-                shape = buttonShape,
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = buttonColor,
-                    disabledContainerColor = buttonColor.copy(alpha = 0.5f)
-                ),
-                contentPadding = contentPadding,
-                modifier = modifier.height(buttonHeight)
-            ) {
-                if (loading) {
-                    CircularProgressIndicator(
-                        color = TextWhite,
-                        modifier = Modifier.size(20.dp),
-                        strokeWidth = 2.dp
-                    )
-                } else {
-                    Text(
-                        text = text,
-                        style = MaterialTheme.typography.titleMedium,
-                        color = TextWhite,
-                        textAlign = TextAlign.Center
-                    )
-                }
-            }
-        }
-
-        ButtonStyle.OUTLINED -> {
-            OutlinedButton(
-                onClick = onClick,
-                enabled = enabled && !loading,
-                shape = buttonShape,
-                colors = ButtonDefaults.outlinedButtonColors(
-                    contentColor = buttonColor
-                ),
-                contentPadding = contentPadding,
-                modifier = modifier.height(buttonHeight)
-            ) {
-                if (loading) {
-                    CircularProgressIndicator(
-                        color = buttonColor,
-                        modifier = Modifier.size(20.dp),
-                        strokeWidth = 2.dp
-                    )
-                } else {
-                    Text(
-                        text = text,
-                        style = MaterialTheme.typography.titleMedium,
-                        textAlign = TextAlign.Center
-                    )
-                }
-            }
-        }
-
-        ButtonStyle.GRADIENT -> {
-            // 渐变起点和终点颜色
-            val startColor = GradientPrimaryStart
-            val endColor = GradientPrimaryEnd
-
-            val gradientBrush = Brush.horizontalGradient(
-                colors = listOf(startColor, endColor)
-            )
-
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier = modifier
-                    .height(buttonHeight)
-                    .clip(buttonShape)
-                    .background(
-                        brush = gradientBrush,
-                        alpha = if (enabled && !loading) 1f else 0.5f
-                    )
-                    .clickable(enabled = enabled && !loading) { onClick() }
-                    .padding(contentPadding)
-            ) {
-                if (loading) {
-                    CircularProgressIndicator(
-                        color = TextWhite,
-                        modifier = Modifier.size(20.dp),
-                        strokeWidth = 2.dp
-                    )
-                } else {
-                    Text(
-                        text = text,
-                        style = MaterialTheme.typography.titleMedium,
-                        color = TextWhite,
-                        textAlign = TextAlign.Center
-                    )
-                }
-            }
-        }
-    }
+    AppButtonCore(
+        text = text,
+        onClick = onClick,
+        modifier = modifier,
+        type = type,
+        style = style,
+        height = size.height,
+        shape = shape,
+        enabled = enabled,
+        loading = loading,
+        textStyle = MaterialTheme.typography.titleMedium,
+        contentPadding = contentPadding,
+    )
 }
 
-/**
- * 带边框的按钮组件
- *
- * @param text 按钮文本
- * @param onClick 点击回调
- * @param modifier 修饰符
- * @param type 按钮类型，默认为DEFAULT
- * @param size 按钮大小，默认为SMALL
- * @param shape 按钮形状，默认为SQUARE
- * @param enabled 是否启用，默认为true
- * @param loading 是否显示加载状态，默认为false
- * @param contentPadding 内容内边距
- * @param color 自定义颜色，优先级比type高
- * @param textStyle 按钮文本样式
- * @param height 自定义高度
- */
+/** Compatibility wrapper for an outlined compact button. */
 @Composable
 fun AppButtonBordered(
     text: String,
@@ -351,76 +114,25 @@ fun AppButtonBordered(
     contentPadding: PaddingValues = PaddingValues(horizontal = 16.dp),
     color: Color? = null,
     textStyle: TextStyle = MaterialTheme.typography.bodyMedium,
-    height: Dp? = null
+    height: Dp? = null,
 ) {
-    // 按钮颜色
-    val buttonColor = color ?: when (type) {
-        ButtonType.DEFAULT -> Primary
-        ButtonType.SUCCESS -> ColorSuccess
-        ButtonType.WARNING -> ColorWarning
-        ButtonType.DANGER -> ColorDanger
-        ButtonType.PURPLE -> ColorPurple
-        ButtonType.LINK -> Primary
-    }
-
-    // 按钮高度
-    val buttonHeight: Dp = height ?: when (size) {
-        ButtonSize.MEDIUM -> 48.dp
-        ButtonSize.SMALL -> 40.dp
-        ButtonSize.MINI -> 34.dp
-    }
-
-    // 按钮形状
-    val buttonShape = when (shape) {
-        ButtonShape.SQUARE -> ShapeSmall
-        ButtonShape.ROUND -> RoundedCornerShape(buttonHeight / 2)
-    }
-
-    Box(
-        contentAlignment = Alignment.Center,
-        modifier = modifier
-            .height(buttonHeight)
-            .clip(buttonShape)
-            .border(
-                width = 1.dp,
-                color = if (enabled && !loading) buttonColor else buttonColor.copy(alpha = 0.5f),
-                shape = buttonShape
-            )
-            .clickable(enabled = enabled && !loading) { onClick() }
-            .padding(contentPadding)
-    ) {
-        if (loading) {
-            CircularProgressIndicator(
-                color = buttonColor,
-                modifier = Modifier.size(20.dp),
-                strokeWidth = 2.dp
-            )
-        } else {
-            Text(
-                text = text,
-                style = textStyle,
-                color = if (enabled) buttonColor else buttonColor.copy(alpha = 0.5f),
-                textAlign = TextAlign.Center
-            )
-        }
-    }
+    AppButtonCore(
+        text = text,
+        onClick = onClick,
+        modifier = modifier,
+        type = type,
+        style = ButtonStyle.OUTLINED,
+        height = height ?: size.height,
+        shape = shape,
+        enabled = enabled,
+        loading = loading,
+        textStyle = textStyle,
+        contentPadding = contentPadding,
+        customColor = color,
+    )
 }
 
-/**
- * 自定义按钮大小组件
- *
- * @param text 按钮文本
- * @param onClick 点击回调
- * @param modifier 修饰符
- * @param type 按钮类型，默认为DEFAULT
- * @param style 按钮样式，默认为FILLED
- * @param width 按钮宽度，默认为null
- * @param height 按钮高度，默认为null
- * @param shape 按钮形状，默认为SQUARE
- * @param enabled 是否启用，默认为true
- * @param loading 是否显示加载状态，默认为false
- * @param textStyle 按钮文本样式
- */
+/** Button variant for layouts that require an explicit width or height. */
 @Composable
 fun AppButtonCustomSize(
     text: String,
@@ -433,119 +145,158 @@ fun AppButtonCustomSize(
     shape: ButtonShape = ButtonShape.ROUND,
     enabled: Boolean = true,
     loading: Boolean = false,
-    textStyle: TextStyle = MaterialTheme.typography.bodyMedium
+    textStyle: TextStyle = MaterialTheme.typography.bodyMedium,
 ) {
-    // 按钮颜色
-    val buttonColor = when (type) {
-        ButtonType.DEFAULT -> Primary
-        ButtonType.SUCCESS -> ColorSuccess
-        ButtonType.WARNING -> ColorWarning
-        ButtonType.DANGER -> ColorDanger
-        ButtonType.PURPLE -> ColorPurple
-        ButtonType.LINK -> Primary
-    }
+    var sizedModifier = modifier
+    if (width != null) sizedModifier = sizedModifier.width(width)
 
-    // 按钮形状
-    val buttonShape = when (shape) {
+    AppButtonCore(
+        text = text,
+        onClick = onClick,
+        modifier = sizedModifier,
+        type = type,
+        style = style,
+        height = height ?: ButtonSize.SMALL.height,
+        shape = shape,
+        enabled = enabled,
+        loading = loading,
+        textStyle = textStyle,
+        contentPadding = ButtonDefaults.ContentPadding,
+    )
+}
+
+@Composable
+private fun AppButtonCore(
+    text: String,
+    onClick: () -> Unit,
+    modifier: Modifier,
+    type: ButtonType,
+    style: ButtonStyle,
+    height: Dp,
+    shape: ButtonShape,
+    enabled: Boolean,
+    loading: Boolean,
+    textStyle: TextStyle,
+    contentPadding: PaddingValues,
+    customColor: Color? = null,
+) {
+    val buttonColor = customColor ?: type.color
+    val contentColor = if (type == ButtonType.WARNING) Color.Black else TextWhite
+    val displayedContentColor = contentColor.copy(
+        alpha = if (enabled || loading) 1f else DisabledContentAlpha,
+    )
+    val resolvedShape = when (shape) {
         ButtonShape.SQUARE -> ShapeSmall
-        ButtonShape.ROUND -> RoundedCornerShape(height ?: (40.dp / 2))
+        ButtonShape.ROUND -> RoundedCornerShape(percent = 50)
     }
-
-    // 修饰符
-    var buttonModifier = modifier
-    if (width != null) {
-        buttonModifier = buttonModifier.then(Modifier.width(width))
-    }
-    if (height != null) {
-        buttonModifier = buttonModifier.then(Modifier.height(height))
-    }
+    val interactionEnabled = enabled && !loading
+    val sizedModifier = modifier.height(height)
 
     when (style) {
-        ButtonStyle.FILLED -> {
-            Button(
-                onClick = onClick,
-                enabled = enabled && !loading,
-                shape = buttonShape,
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = buttonColor,
-                    disabledContainerColor = buttonColor.copy(alpha = 0.5f)
-                ),
-                modifier = buttonModifier
-            ) {
-                if (loading) {
-                    CircularProgressIndicator(
-                        color = TextWhite,
-                        modifier = Modifier.size(20.dp),
-                        strokeWidth = 2.dp
-                    )
-                } else {
-                    Text(
-                        text = text,
-                        style = textStyle,
-                        color = TextWhite
-                    )
-                }
-            }
+        ButtonStyle.FILLED -> Button(
+            onClick = onClick,
+            enabled = interactionEnabled,
+            modifier = sizedModifier,
+            shape = resolvedShape,
+            colors = ButtonDefaults.buttonColors(
+                containerColor = buttonColor,
+                contentColor = contentColor,
+                disabledContainerColor = buttonColor.copy(alpha = DisabledAlpha),
+                disabledContentColor = contentColor.copy(alpha = DisabledContentAlpha),
+            ),
+            contentPadding = contentPadding,
+        ) {
+            ButtonContent(text, loading, textStyle, displayedContentColor)
         }
 
-        ButtonStyle.OUTLINED -> {
-            OutlinedButton(
-                onClick = onClick,
-                enabled = enabled && !loading,
-                shape = buttonShape,
-                colors = ButtonDefaults.outlinedButtonColors(
-                    contentColor = buttonColor
-                ),
-                modifier = buttonModifier
-            ) {
-                if (loading) {
-                    CircularProgressIndicator(
-                        color = buttonColor,
-                        modifier = Modifier.size(20.dp),
-                        strokeWidth = 2.dp
-                    )
-                } else {
-                    Text(
-                        text = text,
-                        style = textStyle
-                    )
-                }
-            }
+        ButtonStyle.OUTLINED -> OutlinedButton(
+            onClick = onClick,
+            enabled = interactionEnabled,
+            modifier = sizedModifier,
+            shape = resolvedShape,
+            colors = ButtonDefaults.outlinedButtonColors(
+                contentColor = buttonColor,
+                disabledContentColor = buttonColor.copy(alpha = DisabledAlpha),
+            ),
+            border = BorderStroke(
+                width = 1.dp,
+                color = buttonColor.copy(alpha = if (interactionEnabled) 1f else DisabledAlpha),
+            ),
+            contentPadding = contentPadding,
+        ) {
+            ButtonContent(
+                text = text,
+                loading = loading,
+                textStyle = textStyle,
+                color = buttonColor.copy(alpha = if (enabled || loading) 1f else DisabledAlpha),
+            )
         }
 
         ButtonStyle.GRADIENT -> {
-            // 渐变起点和终点颜色
-            val startColor = GradientPrimaryStart
-            val endColor = GradientPrimaryEnd
-
-            val gradientBrush = Brush.horizontalGradient(
-                colors = listOf(startColor, endColor)
+            val gradient = Brush.horizontalGradient(
+                listOf(
+                    lerp(buttonColor, Color.White, 0.15f),
+                    lerp(buttonColor, Color.Black, 0.15f),
+                )
             )
-
             Box(
                 contentAlignment = Alignment.Center,
-                modifier = buttonModifier
-                    .clip(buttonShape)
-                    .background(
-                        brush = gradientBrush,
-                        alpha = if (enabled && !loading) 1f else 0.5f
+                modifier = sizedModifier
+                    .clip(resolvedShape)
+                    .background(gradient, alpha = if (interactionEnabled) 1f else DisabledAlpha)
+                    .clickable(
+                        enabled = interactionEnabled,
+                        role = Role.Button,
+                        onClick = onClick,
                     )
-                    .clickable(enabled = enabled && !loading) { onClick() }
+                    .padding(contentPadding),
             ) {
-                if (loading) {
-                    CircularProgressIndicator(
-                        color = TextWhite,
-                        modifier = Modifier.size(20.dp),
-                        strokeWidth = 2.dp
-                    )
-                } else {
-                    Text(
-                        text = text,
-                        style = textStyle,
-                        color = TextWhite
-                    )
-                }
+                ButtonContent(text, loading, textStyle, displayedContentColor)
             }
         }
     }
 }
+
+@Composable
+private fun ButtonContent(
+    text: String,
+    loading: Boolean,
+    textStyle: TextStyle,
+    color: Color,
+) {
+    Box(contentAlignment = Alignment.Center) {
+        Text(
+            text = text,
+            style = textStyle,
+            color = color,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.alpha(if (loading) 0f else 1f),
+        )
+        if (loading) {
+            CircularProgressIndicator(
+                color = color,
+                modifier = Modifier.size(20.dp),
+                strokeWidth = 2.dp,
+            )
+        }
+    }
+}
+
+private val ButtonSize.height: Dp
+    get() = when (this) {
+        ButtonSize.MEDIUM -> 48.dp
+        ButtonSize.SMALL -> 40.dp
+        ButtonSize.MINI -> 34.dp
+    }
+
+private val ButtonType.color: Color
+    @Composable get() = when (this) {
+        ButtonType.DEFAULT, ButtonType.LINK -> Primary
+        ButtonType.SUCCESS -> ColorSuccess
+        ButtonType.WARNING -> ColorWarning
+        ButtonType.DANGER -> ColorDanger
+        ButtonType.PURPLE -> ColorPurple
+    }
+
+private const val DisabledAlpha = 0.48f
+private const val DisabledContentAlpha = 0.72f

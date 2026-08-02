@@ -56,12 +56,28 @@ publishing {
 
     publications {
         register<MavenPublication>("release") {
-            groupId = "com.seanchen.widget"
+            groupId = project.group.toString()
             artifactId = "ui"
-            version = "0.1.1"
+            version = project.version.toString()
 
             afterEvaluate {
                 from(components["release"])
+            }
+
+            pom {
+                name.set("XinComponent UI")
+                description.set("Enterprise-ready Jetpack Compose design system and UI components.")
+                url.set("https://github.com/Akiha678/Android_Widget")
+                licenses {
+                    license {
+                        name.set("The Apache License, Version 2.0")
+                        url.set("https://www.apache.org/licenses/LICENSE-2.0.txt")
+                    }
+                }
+                scm {
+                    url.set("https://github.com/Akiha678/Android_Widget")
+                    connection.set("scm:git:git://github.com/Akiha678/Android_Widget.git")
+                }
             }
         }
     }
@@ -69,10 +85,8 @@ publishing {
 
 dependencies {
     testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.test.runner)
 
-    implementation(libs.androidx.compose)
-    implementation(libs.androidx.material3)
+    // Public component signatures expose Compose and Material 3 types.
+    api(libs.androidx.compose)
+    api(libs.androidx.material3)
 }

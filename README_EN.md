@@ -1,0 +1,213 @@
+<div align="center">
+  <img src="docs/images/xincomponent_logo.png" width="120" alt="XinComponent Logo" />
+
+  <h1>XinComponent</h1>
+  <p>A production-oriented Jetpack Compose design system and Android component library</p>
+
+  <p><a href="README.md">简体中文</a></p>
+
+  [![Kotlin](https://img.shields.io/badge/Kotlin-2.3.20-7F52FF?logo=kotlin&logoColor=white)](https://kotlinlang.org/)
+  [![Compose](https://img.shields.io/badge/Compose-1.11.4-4285F4?logo=jetpackcompose&logoColor=white)](https://developer.android.com/compose)
+  [![Material 3](https://img.shields.io/badge/Material%203-1.4.0-6750A4)](https://m3.material.io/)
+  [![License](https://img.shields.io/badge/License-Apache%202.0-green.svg)](LICENSE)
+</div>
+
+XinComponent provides Compose applications with consistent design tokens, theming, and foundational interactive components. The current release prioritizes clear APIs, complete states, extensibility, and reliable publication. Reserved modules are explicitly identified instead of being advertised as finished features.
+
+## Project status
+
+The project is evolving rapidly in the `0.x` phase. It is suitable for pilot adoption and collaborative development, but public APIs may still change before `1.0.0`.
+
+| Module | Status | Contents |
+| --- | --- | --- |
+| `ui` | Available | Material 3 theme, semantic colors, text colors, spacing tokens, buttons, and dialogs |
+| `network` | Reserved | No public networking API yet; do not use it in production |
+| `utils` | Reserved | No public utility API yet; do not use it in production |
+
+## Highlights
+
+- Material 3 foundation with light/dark themes, Android 12+ dynamic color, and a custom brand color.
+- Semantic color, text color, and shared 4dp spacing tokens exposed through `XinTheme`.
+- Filled, outlined, and gradient buttons with semantic types, sizes, disabled, and loading states.
+- Dialogs with confirm/cancel actions, asynchronous confirmation, dismissal policies, a maximum width, and slot-based customization.
+- Source JARs and Maven POM metadata, with public Compose dependencies correctly exposed through `api`.
+- Android 7.0 (API 24) minimum; Kotlin 2.3.20, Compose 1.11.4, and Material 3 1.4.0.
+
+## Installation
+
+
+### Jitpack
+
+Add Repository in `settings.gradle.kts`
+
+```kotlin
+dependencyResolutionManagement {
+    repositories {
+        google()
+        mavenCentral()
+        maven {
+            url = uri("https://jitpack.io")
+        }
+    }
+}
+```
+
+Use in `build.gradle.kts`
+```kotlin
+dependencies {
+    implementation("com.github.Akiha678:XinComponent:v0.1.1")
+}
+```
+
+## Quick start
+
+Wrap the application root in `AppTheme`:
+
+```kotlin
+@Composable
+fun MyApp() {
+    AppTheme(dynamicColor = false) {
+        // App content
+    }
+}
+```
+
+Supply a brand color or follow the system theme explicitly when needed:
+
+```kotlin
+AppTheme(
+    darkTheme = isSystemInDarkTheme(),
+    themeColor = Color(0xFF006C4C),
+    dynamicColor = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S,
+) {
+    AppContent()
+}
+```
+
+## Design tokens
+
+Components and product screens should use shared tokens instead of one-off colors and dimensions:
+
+```kotlin
+@Composable
+fun StatusMessage() {
+    Text(
+        text = "Saved",
+        color = XinTheme.colors.success,
+        modifier = Modifier.padding(XinTheme.spacing.large),
+    )
+}
+```
+
+Available entry points:
+
+- `MaterialTheme.colorScheme` for Material 3 foundation colors.
+- `XinTheme.colors` for `success`, `warning`, `danger`, `info`, and `onStatus`.
+- `XinTheme.textColors` for `primary`, `secondary`, `tertiary`, `quaternary`, `white`, and `link`.
+- `XinTheme.spacing` for the shared spacing scale from `none` to `huge`.
+
+## Components
+
+### Button
+
+```kotlin
+AppButton(
+    text = "Submit",
+    type = ButtonType.SUCCESS,
+    style = ButtonStyle.GRADIENT,
+    size = ButtonSize.MEDIUM,
+    loading = isSubmitting,
+    enabled = formIsValid,
+    onClick = ::submit,
+)
+```
+
+Button APIs:
+
+- `AppButton`: the primary action button, full-width by default.
+- `AppButtonFixed`: a compact button sized by its content.
+- `AppButtonBordered`: compatibility API for a customizable outlined button.
+- `AppButtonCustomSize`: use when a layout requires an explicit width or height.
+- `ButtonStyle`: `FILLED`, `OUTLINED`, and `GRADIENT`.
+- `ButtonType`: `DEFAULT`, `SUCCESS`, `WARNING`, `DANGER`, `PURPLE`, and `LINK`.
+
+When `loading` is true, the button disables interaction and keeps its label in the layout to prevent width shifts and duplicate submissions.
+
+### Dialog
+
+```kotlin
+if (showDeleteDialog) {
+    AppDialog(
+        title = "Delete item?",
+        content = "This action cannot be undone.",
+        okText = "Delete",
+        okColor = ColorDanger,
+        confirmLoading = isDeleting,
+        onOk = ::delete,
+        onCancel = { showDeleteDialog = false },
+        onDismiss = { showDeleteDialog = false },
+    )
+}
+```
+
+Callbacks do not dismiss the dialog automatically. The caller owns visibility, allowing an asynchronous operation to keep the dialog open and use `confirmLoading` to prevent duplicate actions. Complex screens can use the slot-based `AppDialog` overload.
+
+## Project structure
+
+```text
+XinComponent/
+├── ui/       # Compose themes, tokens, and components
+├── network/  # Reserved networking module
+├── utils/    # Reserved utility module
+├── docs/     # Documentation assets
+└── gradle/   # Version catalog and Wrapper configuration
+```
+
+## Build and quality checks
+
+JDK 21 and Android SDK with compile SDK 37 are required. Use the checked-in Gradle Wrapper rather than a system Gradle installation.
+
+```bash
+# Unit tests
+./gradlew test
+
+# Android Lint
+./gradlew lint
+
+# Build all release AARs
+./gradlew assembleRelease
+
+# Publish to Maven Local
+./gradlew publishToMavenLocal
+
+# Publish to GitHub Packages
+GITHUB_USERNAME=your-name GITHUB_TOKEN=your-token ./gradlew publish
+```
+
+Run at least `./gradlew test lint assembleRelease` before submitting changes.
+
+## Versioning and compatibility
+
+The project follows semantic versioning:
+
+- Patch releases fix defects without changing expected API behavior.
+- Minor releases add backward-compatible capabilities; documented API adjustments can still occur during `0.x`.
+- Major releases contain breaking changes after stabilization.
+
+Applications should pin an explicit version and avoid dynamic versions. Read theme values through `XinTheme` and `MaterialTheme` rather than depending on implementation-level color constants.
+
+## Roadmap
+
+- Add a sample application and a complete component catalog with screenshots and interaction examples.
+- Add Compose UI, screenshot, and accessibility tests for Button, Dialog, and Theme.
+- Add high-value Input, Card, Snackbar, Empty, Loading, and List components.
+- Establish binary API validation, Dokka, Detekt/Ktlint, and a CI release pipeline.
+- Keep `network` and `utils` empty until real requirements justify their contracts and dependencies.
+
+## Contributing
+
+Issues and pull requests are welcome. New components should include a clear public API, light/dark behavior, loading/disabled/error states where relevant, accessibility semantics, examples, tests, and release notes. Do not hard-code product copy inside components.
+
+## License
+
+XinComponent is released under the [Apache License 2.0](LICENSE).

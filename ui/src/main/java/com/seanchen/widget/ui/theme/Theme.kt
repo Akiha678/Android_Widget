@@ -8,6 +8,7 @@ import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import com.seanchen.widget.ui.color.*
@@ -84,10 +85,44 @@ fun AppTheme(
         )
     }
 
-    MaterialTheme(
-        colorScheme = colorScheme,
-        typography = Typography,
-        shapes = AppShapes,
-        content = content
+    val textColors = if (darkTheme) {
+        AppTextColors(
+            primary = TextPrimaryDark,
+            secondary = TextSecondaryDark,
+            tertiary = TextTertiaryDark,
+            quaternary = TextQuaternaryDark,
+            white = TextWhite,
+            link = colorScheme.primary,
+        )
+    } else {
+        AppTextColors(
+            primary = TextPrimaryLight,
+            secondary = TextSecondaryLight,
+            tertiary = TextTertiaryLight,
+            quaternary = TextQuaternaryLight,
+            white = TextWhite,
+            link = colorScheme.primary,
+        )
+    }
+
+    val semanticColors = AppSemanticColors(
+        success = ColorSuccess,
+        warning = ColorWarning,
+        danger = colorScheme.error,
+        info = colorScheme.primary,
+        onStatus = TextWhite,
     )
+
+    CompositionLocalProvider(
+        LocalAppTextColors provides textColors,
+        LocalAppSemanticColors provides semanticColors,
+        LocalAppSpacing provides AppSpacing(),
+    ) {
+        MaterialTheme(
+            colorScheme = colorScheme,
+            typography = Typography,
+            shapes = AppShapes,
+            content = content
+        )
+    }
 }
