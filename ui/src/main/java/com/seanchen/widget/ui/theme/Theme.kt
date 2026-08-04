@@ -11,8 +11,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import com.seanchen.widget.ui.color.*
-import com.seanchen.widget.ui.shape.AppShapes
 
 private val DarkColorScheme = darkColorScheme(
     primary = PrimaryDefault,

@@ -35,21 +35,3 @@ internal val LocalAppSemanticColors = staticCompositionLocalOf<AppSemanticColors
 }
 
 internal val LocalAppSpacing = staticCompositionLocalOf { AppSpacing() }
-
-/** Entry point for XinComponent design tokens. */
-object XinTheme {
-    val colors: AppSemanticColors
-        @Composable
-        @ReadOnlyComposable
-        get() = LocalAppSemanticColors.current
-
-    val textColors: AppTextColors
-        @Composable
-        @ReadOnlyComposable
-        get() = LocalAppTextColors.current
-
-    val spacing: AppSpacing
-        @Composable
-        @ReadOnlyComposable
-        get() = LocalAppSpacing.current
-}

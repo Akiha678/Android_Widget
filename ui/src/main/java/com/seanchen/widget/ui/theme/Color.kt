@@ -1,4 +1,4 @@
-package com.seanchen.widget.ui.color
+package com.seanchen.widget.ui.theme
 
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable

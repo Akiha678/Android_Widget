@@ -30,13 +30,13 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.seanchen.widget.ui.color.ColorDanger
-import com.seanchen.widget.ui.color.ColorPurple
-import com.seanchen.widget.ui.color.ColorSuccess
-import com.seanchen.widget.ui.color.ColorWarning
-import com.seanchen.widget.ui.color.Primary
-import com.seanchen.widget.ui.color.TextWhite
-import com.seanchen.widget.ui.shape.ShapeSmall
+import com.seanchen.widget.ui.theme.ColorDanger
+import com.seanchen.widget.ui.theme.ColorPurple
+import com.seanchen.widget.ui.theme.ColorSuccess
+import com.seanchen.widget.ui.theme.ColorWarning
+import com.seanchen.widget.ui.theme.Primary
+import com.seanchen.widget.ui.theme.TextWhite
+import com.seanchen.widget.ui.theme.ShapeSmall
 
 /**
  * Primary XinComponent action button.
