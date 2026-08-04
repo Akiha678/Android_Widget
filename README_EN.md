@@ -22,6 +22,25 @@ XinComponent provides Compose applications with consistent design tokens, themin
 - Dialogs with confirm/cancel actions, asynchronous confirmation, dismissal policies, a maximum width, and slot-based customization.
 - Android 7.0 (API 24) minimum; Kotlin 2.3.20, Compose 1.11.4, and Material 3 1.4.0.
 
+## 📱 Preview
+
+<table>
+  <b> Component Preview
+  <tr>
+    <td><img src="docs/preview/overview.jpg" alt="组件概览"/></td>  
+  </tr>
+  <tr>
+    <td><img src="docs/preview/appbar.jpg" alt="AppBar"/></td>
+    <td><img src="docs/preview/applist.jpg" alt="AppList"/></td>
+    <td><img src="docs/preview/text.jpg" alt="Text"/></td>
+  </tr>
+  <tr>
+    <td><img src="docs/preview/button.jpg" alt="Button"/></td>
+    <td><img src="docs/preview/card.jpg" alt="Card"/></td>
+    <td><img src="docs/preview/dialog.jpg" alt="Dialog"/></td>
+  </tr>
+</table>
+
 ## Installation
 
 

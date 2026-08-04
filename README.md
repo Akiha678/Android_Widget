@@ -22,6 +22,26 @@ XinComponent 为 Compose 项目提供统一的设计令牌、主题和基础交�
 - 对话框支持确认/取消、异步确认、关闭策略、最大宽度和插槽式内容扩展。
 - 最低支持 Android 7.0（API 24），使用 Kotlin 2.3.20、Compose 1.11.4、Material 3 1.4.0。
 
+## 📱 预览
+
+<table>
+  <b> 组件列表
+  <tr>
+    <td><img src="docs/preview/overview.jpg" alt="组件概览"/></td>  
+  </tr>
+  <tr>
+    <td><img src="docs/preview/appbar.jpg" alt="AppBar"/></td>
+    <td><img src="docs/preview/applist.jpg" alt="AppList"/></td>
+    <td><img src="docs/preview/text.jpg" alt="Text"/></td>
+  </tr>
+  <tr>
+    <td><img src="docs/preview/button.jpg" alt="Button"/></td>
+    <td><img src="docs/preview/card.jpg" alt="Card"/></td>
+    <td><img src="docs/preview/dialog.jpg" alt="Dialog"/></td>
+  </tr>
+</table>
+
+
 ## 安装
 
 ### Jitpack
