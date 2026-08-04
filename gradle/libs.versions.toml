@@ -1,0 +1,27 @@
+[versions]
+# 构建工具版本
+# Android Gradle Plugin: https://developer.android.com/studio/releases/gradle-plugin
+agp = "9.2.1"
+# Kotlin 编译器: https://kotlinlang.org/docs/releases.html
+# 注意: 需要和 hilt 版本对应
+kotlin = "2.3.20"
+# 测试框架版本
+# JUnit 4 测试框架: https://junit.org/junit4/
+junit = "4.13.2"
+compose = "1.11.4"
+material3 = "1.4.0"
+
+[libraries]
+# Compose相关库
+androidx-compose = { group = "androidx.compose.runtime", name = "runtime", version.ref = "compose" }
+androidx-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "material3" }
+
+# 测试相关库
+junit = { group = "junit", name = "junit", version.ref = "junit" }
+
+[plugins]
+# Android 相关插件
+android-application = { id = "com.android.application", version.ref = "agp" }
+android-library = { id = "com.android.library", version.ref = "agp" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
